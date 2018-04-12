@@ -1,0 +1,26 @@
+$font-roboto : Roboto;
+$nav-height: 90px;
+$title-decoration-height: 90px;
+$title-decoration-width: 100px;
+$tech-logo-size: 100px;
+$text-big: 24px;
+$text-medium: 16px;
+$text-small: 12px;
+
+.title {
+    display: flex;
+}
+
+.img-title {
+    height: 400px;
+}
+
+.primary-title {
+    font-family: $font-roboto;
+    font-size: 100px;
+    display: flex;
+    align-items: center;
+    margin-left: -80px;
+    margin-top: 30px;
+}
+
