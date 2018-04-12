@@ -9,11 +9,17 @@ $tech-logo-size: 100px;
 $text-big: 24px;
 $text-medium: 16px;
 $text-small: 12px;
-
+.div-frontend {
+    display: flex;
+}
+.img-frontend {
+    height: 400px;
+}
 .primary-title {
     font-family: $font-roboto;
-    font-size: $text-big;
-    display:flex;
-    justify-content: center;
-    margin-top: 3%;
+    font-size: 100px;
+    display: inline-flex;
+    align-items: center;
+    margin-left: -80px;
+    margin-top: 30px;
 }
