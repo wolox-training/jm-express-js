@@ -1,0 +1,39 @@
+.tech-background {
+    margin-left: 30%;
+    background-clip: content-box;
+    background-color: $white;
+    border-radius: 25px;
+    border: 7px solid $green;
+}
+
+.size-tech {
+    height: 1600px;
+    width: 1000px;
+    .modify {
+        height: 1400px;
+    }
+}
+
+.tech {
+    margin-top: 40px;
+    margin-left: 40px;
+    background: $green;
+    border-radius: 25px;
+}
+
+.order-tech {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+
+}
+
+.font-tech {
+    font-size: 70px;
+}
+
+.format {
+    text-align: center;
+    width: 700px;
+}
