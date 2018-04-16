@@ -5,7 +5,7 @@
     border: 1px solid $green;
     margin-top: 10px;
     .space {
-        margin-left: 100px;
+        margin-left: 50px;
     }
 }
 
@@ -16,6 +16,10 @@
 .size-tech {
     height: 340px;
     width: 220px;
+}
+
+.modify {
+    height: 400px;
 }
 
 .subtitle {
@@ -32,7 +36,7 @@
 .order-tech {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
 
 }
@@ -44,11 +48,11 @@
 
 .format {
     text-align: center;
-    width: 200px;
+    width: 180px;
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 15px;
-    height: 90px;
+    height: 120px;
 }
 
 .technologys {
@@ -57,10 +61,14 @@
     justify-content: space-between;
     margin-left: 240px;
     padding-top: 30px;
-    width: 1250px;
+    width: 1000px;
+    height: 800px;
+    .flex-modify {
+        justify-content: baseline;
+    }
 }
 
-.content-back {
+.content {
     display: flex;
     flex-direction: column;
 }
@@ -69,4 +77,6 @@
     margin-top: 200px;
 }
 
-
+.front {
+    height: 160px;;
+}
