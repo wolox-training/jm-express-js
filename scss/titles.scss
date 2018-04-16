@@ -9,18 +9,22 @@ $text-small: 12px;
 
 .title {
     display: flex;
+    flex-wrap: wrap;
+    padding-left: 200px;
+    padding-top: 100px;
 }
 
 .img-title {
-    height: 400px;
+    height: $tech-logo-size;
+    width: $tech-logo-size;
 }
 
 .primary-title {
     font-family: $font-roboto;
-    font-size: 100px;
+    font-size: $text-big;
     display: flex;
     align-items: center;
-    margin-left: -80px;
-    margin-top: 30px;
+    margin-left: -20px;
+    padding-top: 5px;
 }
 
