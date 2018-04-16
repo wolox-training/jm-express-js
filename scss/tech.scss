@@ -1,24 +1,29 @@
 .tech-background {
-    margin-left: 30%;
     background-clip: content-box;
     background-color: $white;
-    border-radius: 25px;
-    border: 7px solid $green;
+    border-radius: 5px;
+    border: 1px solid $green;
+    margin-top: 10px;
+}
+
+.modify-img {
+    padding-top: 5px;
 }
 
 .size-tech {
-    height: 1600px;
-    width: 1000px;
-    .modify {
-        height: 1400px;
-    }
+    height: 340px;
+    width: 220px;
+}
+
+.subtitle {
+    padding-bottom: 15px;
 }
 
 .tech {
-    margin-top: 40px;
-    margin-left: 40px;
+    margin-top: 10px;
+    margin-left: 10px;
     background: $green;
-    border-radius: 25px;
+    border-radius: 5px;
 }
 
 .order-tech {
@@ -30,12 +35,16 @@
 }
 
 .font-tech {
-    font-size: 70px;
+    font-size: $text-medium;
     font-family: $font-roboto;
 }
 
 .format {
     text-align: center;
-    width: 700px;
+    width: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    height: 90px;
+    line-height: inherit;
 }
-
