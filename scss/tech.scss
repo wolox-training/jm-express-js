@@ -20,8 +20,8 @@
 }
 
 .tech {
-    margin-top: 10px;
-    margin-left: 10px;
+    
+    margin: 10px 0 0 10px;
     background: $green;
     border-radius: 5px;
 }
@@ -29,7 +29,7 @@
 .order-tech {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
 
 }
