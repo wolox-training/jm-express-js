@@ -1,0 +1,25 @@
+.navbar {
+    height: $nav-height;
+    width: 100%;
+    box-shadow: 0 6px 5px $grey;
+    opacity: 1;
+    position: fixed;
+    background-color: $white;
+}
+
+.font-navbar {
+    font-size: $text-big;
+    font-family: $font-roboto;
+    float: right;
+    padding: 32px 8px 0 0;
+}
+
+.img-navbar {
+    width: 200px;
+    height: 150px;
+    padding: 0 0 0 15px;
+    margin-top: -36px;
+}
+
+
+
