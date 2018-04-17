@@ -1,6 +1,5 @@
 .tech-background {
     background-clip: content-box;
-    background-color: $white;
     border-radius: 5px;
     border: 1px solid $green;
     margin: 40px 0 10px 42px;
@@ -9,10 +8,9 @@
 .size-tech {
     height: 340px;
     width: 220px;
-}
-
-.modify {
-    height: 400px;
+    &.modify {
+        height: 400px;
+    }
 }
 
 .subtitle {
@@ -20,9 +18,10 @@
 }
 
 .tech {
-    margin: 10px 0 0 10px;
+    margin: 50px 0 0 42px;
     background: $green;
     border-radius: 5px;
+    position: relative;
 }
 
 .order-tech {
@@ -46,6 +45,10 @@
     height: 120px;
     line-height: inherit;
     padding: 10px 0 15px 0;
+    &.front-text {
+        height: 160px;
+    }
+
 }
 
 .technologys {
@@ -60,10 +63,21 @@
     flex-direction: column;
 }
 
-.front-margin {
-    margin-left: 35px;
+.order-tech::before,
+.order-tech.modify::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: -10px;
+    left: -10px;
+    border: 1px solid $green;
+    border-radius: 5px;
+    transition: all 0.5s ease;
 }
 
-.front-text {
-    height: 160px;
+.order-tech:hover::before,
+.order-tech.size-tech.modify:hover::before{
+    top: 10px;
+    left: 10px;
 }
