@@ -3,11 +3,7 @@
     background-color: $white;
     border-radius: 5px;
     border: 1px solid $green;
-    margin-top: 10px;
-}
-
-.modify-img {
-    padding-top: 5px;
+    margin: 40px 0 10px 42px;
 }
 
 .size-tech {
@@ -15,8 +11,12 @@
     width: 220px;
 }
 
+.modify {
+    height: 400px;
+}
+
 .subtitle {
-    padding-bottom: 15px;
+    padding: 10px 0 15px 0;
 }
 
 .tech {
@@ -28,21 +28,42 @@
 .order-tech {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
 }
 
 .font-tech {
     font-size: $text-medium;
     font-family: $font-roboto;
+    padding: 10px 0 10px 0;
 }
 
 .format {
     text-align: center;
-    width: 200px;
+    width: 180px;
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 15px;
-    height: 90px;
+    height: 120px;
     line-height: inherit;
+    padding: 10px 0 15px 0;
+}
+
+.technologys {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-left: 240px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+}
+
+.front-margin {
+    margin-left: 35px;
+}
+
+.front-text {
+    height: 160px;
 }
