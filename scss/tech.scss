@@ -1,9 +1,7 @@
 .tech-background {
     background-clip: content-box;
-    background-color: $white;
     border-radius: 5px;
     border: 1px solid $green;
-    margin: 40px 0 10px 42px;
 }
 
 .modify-img {
@@ -15,6 +13,13 @@
     width: 220px;
 }
 
+.effect {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+
+}
+
 .modify {
     height: 400px;
 }
@@ -24,9 +29,10 @@
 }
 
 .tech {
-    margin: 10px 0 0 10px;
+    margin: 50px 0 0 42px;
     background: $green;
     border-radius: 5px;
+    position: relative;
 }
 
 .order-tech {
@@ -76,3 +82,7 @@
     height: 160px;;
 }
 
+.tech-background:hover {
+    top:10px;
+    left:10px;
+}
