@@ -4,28 +4,16 @@
     border: 1px solid $green;
 }
 
-.modify-img {
-    padding-top: 5px;
-}
-
 .size-tech {
     height: 340px;
     width: 220px;
-}
-
-.effect {
-    position: absolute;
-    top: -10px;
-    left: -10px;
-
-}
-
-.modify {
-    height: 400px;
+    &.modify {
+        height: 400px;
+    }
 }
 
 .subtitle {
-    padding-bottom: 15px;
+    padding: 10px 0 15px 0;
 }
 
 .tech {
@@ -38,14 +26,14 @@
 .order-tech {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-
 }
 
 .font-tech {
     font-size: $text-medium;
     font-family: $font-roboto;
+    padding: 10px 0 10px 0;
 }
 
 .format {
@@ -56,6 +44,11 @@
     margin-bottom: 15px;
     height: 120px;
     line-height: inherit;
+    padding: 10px 0 15px 0;
+    &.front-text {
+        height: 160px;
+    }
+
 }
 
 .technologys {
@@ -65,24 +58,27 @@
     margin-left: 240px;
 }
 
-.flex-modify {
-    justify-content: baseline;
-}
-
 .content {
     display: flex;
     flex-direction: column;
 }
 
-.front-margin {
-    margin-left: 35px;
+.order-tech::before,
+.order-tech.modify::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: -10px;
+    left: -10px;
+    border: 1px solid $green;
+    border-radius: 5px;
+    transition: all 0.5s ease;
 }
 
-.front-text {
-    height: 160px;;
+.order-tech:hover::before,
+.order-tech.size-tech.modify:hover::before{
+    top: 10px;
+    left: 10px;
 }
 
-.tech-background:hover {
-    top:10px;
-    left:10px;
-}
