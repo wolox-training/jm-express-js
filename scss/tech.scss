@@ -6,10 +6,6 @@
     margin: 40px 0 10px 42px;
 }
 
-.modify-img {
-    padding-top: 5px;
-}
-
 .size-tech {
     height: 340px;
     width: 220px;
@@ -20,7 +16,7 @@
 }
 
 .subtitle {
-    padding-bottom: 15px;
+    padding: 10px 0 15px 0;
 }
 
 .tech {
@@ -32,7 +28,7 @@
 .order-tech {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
 
 }
@@ -40,6 +36,7 @@
 .font-tech {
     font-size: $text-medium;
     font-family: $font-roboto;
+    padding: 10px 0 10px 0;
 }
 
 .format {
@@ -47,9 +44,9 @@
     width: 180px;
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 15px;
     height: 120px;
     line-height: inherit;
+    padding: 10px 0 15px 0;
 }
 
 .technologys {
@@ -57,10 +54,6 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     margin-left: 240px;
-}
-
-.flex-modify {
-    justify-content: baseline;
 }
 
 .content {
@@ -73,6 +66,6 @@
 }
 
 .front-text {
-    height: 160px;;
+    height: 160px;
 }
 
