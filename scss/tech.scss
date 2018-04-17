@@ -27,8 +27,7 @@
 }
 
 .tech {
-    margin-top: 10px;
-    margin-left: 10px;
+    margin: 10px 0 0 10px;
     background: $green;
     border-radius: 5px;
 }
@@ -53,19 +52,21 @@
     flex-wrap: wrap;
     margin-bottom: 15px;
     height: 120px;
+    line-height: inherit;
 }
 
 .technologys {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-left: 240px;
+    margin-left: 260px;
     padding-top: 30px;
     width: 1000px;
     height: 800px;
-    .flex-modify {
-        justify-content: baseline;
-    }
+}
+
+.flex-modify {
+    justify-content: baseline;
 }
 
 .content {
@@ -77,6 +78,11 @@
     margin-top: 200px;
 }
 
-.front {
+.front-margin {
+    margin-left: 35px;
+}
+
+.front-text {
     height: 160px;;
 }
+

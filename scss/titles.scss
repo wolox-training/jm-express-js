@@ -10,8 +10,7 @@ $text-small: 12px;
 .title {
     display: flex;
     flex-wrap: wrap;
-    padding-left: 200px;
-    padding-top: 100px;
+    padding: 100px 0 0 200px;
 }
 
 .img-title {
@@ -24,7 +23,7 @@ $text-small: 12px;
     font-size: $text-big;
     display: flex;
     align-items: center;
-    margin-left: -20px;
+    margin-left: -32px;
     padding-top: 5px;
 }
 
