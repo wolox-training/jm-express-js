@@ -1,0 +1,30 @@
+.footer {
+    height: 150px;
+    background-color: $blue;
+    margin-top: 25px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+.img-footer {
+    height: 60px;
+}
+
+.title-footer {
+    font-size: 20px;
+    font-family: $font-roboto;
+    color: $white;
+    padding: 10px 0 20px 0;
+}
+
+.copyright {
+    color: $white;
+    align-self: flex-end;
+    font-family: $font-roboto;
+    font-size: $text-small;
+    margin: 0 15px;
+}
+
