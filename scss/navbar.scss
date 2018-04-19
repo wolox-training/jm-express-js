@@ -22,3 +22,13 @@
     padding: 0 0 0 15px;
     margin-top: -36px;
 }
+@media only screen and (max-width: 1024px) {
+    .copyright {
+        align-self: initial;
+        padding: 30px 0 0 0;
+    }
+
+    .font-navbar {
+        display:none;
+    }
+}

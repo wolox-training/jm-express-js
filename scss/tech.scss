@@ -2,6 +2,10 @@
     height: 340px;
     width: 220px;
     margin-left: 10px;
+    &.modify {
+        height: 390px;
+        width: 240px;
+    }
 }
 
 .subtitle {
@@ -29,9 +33,6 @@
     height: 120px;
     line-height: inherit;
     padding: 10px 0 0 0;
-    &.front-text {
-        height: 160px;
-    }
 
 }
 
@@ -60,4 +61,42 @@
     align-items: center;
     justify-content: center;
     border-right: 2px $green solid;
+}
+
+@media only screen and (max-width: 1024px) {
+    .title {
+        padding-left: 0;
+        &.second {
+            padding: 100px 0 30px;
+        }
+    }
+    .content {
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .technologys {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 0px;
+        width: 400px;
+    }
+
+    .first {
+        border-right: 0px;
+    }
+
+    .order-tech {
+        border-bottom: 2px $green solid;
+        padding-bottom: 10px;
+        &.last {
+            border-bottom: 0;
+        }
+    }
+
+    .first-tech {
+        padding-bottom: 50px;
+    }
 }
