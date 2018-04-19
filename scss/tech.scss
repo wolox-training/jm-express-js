@@ -1,26 +1,11 @@
-.tech-background {
-    background-clip: content-box;
-    border-radius: 5px;
-    border: 1px solid $green;
-}
-
 .size-tech {
     height: 340px;
     width: 220px;
-    &.modify {
-        height: 400px;
-    }
+    margin-left: 10px;
 }
 
 .subtitle {
     padding: 10px 0 15px 0;
-}
-
-.tech {
-    margin: 50px 0 0 42px;
-    background: $green;
-    border-radius: 5px;
-    position: relative;
 }
 
 .order-tech {
@@ -43,7 +28,7 @@
     flex-wrap: wrap;
     height: 120px;
     line-height: inherit;
-    padding: 10px 0 15px 0;
+    padding: 10px 0 0 0;
     &.front-text {
         height: 160px;
     }
@@ -51,32 +36,28 @@
 }
 
 .technologys {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    margin-left: 240px;
+    display: grid;
+    grid-template-columns: repeat(3, 250px);
+    grid-template-rows: repeat(2, 330px);
+    justify-items: center;
+    margin: 50px 0 0 300px;
+    grid-row-gap: 40px;
 }
 
 .content {
     display: flex;
     flex-direction: column;
+    margin-bottom: 80px;
 }
 
-.order-tech::before,
-.order-tech.modify::before {
-    content: "";
-    position: absolute;
+.first {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    position: relative;
     height: 100%;
     width: 100%;
-    top: -10px;
-    left: -10px;
-    border: 1px solid $green;
-    border-radius: 5px;
-    transition: all 0.5s ease;
-}
-
-.order-tech:hover::before,
-.order-tech.size-tech.modify:hover::before{
-    top: 10px;
-    left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 2px $green solid;
 }
