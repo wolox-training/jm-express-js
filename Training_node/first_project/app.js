@@ -25,7 +25,7 @@ const bodyParserUrlencodedConfig = () => ({
 const init = () => {
   const app = express();
   const port = config.common.port || 8080;
-  module.exports = app;
+  module.exports =  app;
 
   app.use('/docs', express.static(path.join(__dirname, 'docs')));
 
