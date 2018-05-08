@@ -35,7 +35,14 @@ module.exports = (sequelize, DataTypes) => {
       throw errors.databaseError(err.message);
     });
   };
-
+  User.getOne = email => {
+    return User.findOne({ where: email }).catch(err => {
+      throw errors.databaseError(err.detail);
+    });
+  };
+  User.getByEmail = email => {
+    return User.getOne({ email });
+  };
   User.associate = function(models) {};
   return User;
 };

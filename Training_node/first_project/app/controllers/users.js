@@ -6,12 +6,16 @@ const User = require('../models/').user,
   errors = require('../errors'),
   logger = require('../logger');
 
-const validate = (email, password) => {
+const validate = user => {
+
+  if (!user.firstName || !user.lastName || !user.password || !user.email) throw errors.requiredFields;
+};
+const validateRestrictions = (email, password) => {
   if (!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'))) {
-    throw errors.emailInvalid('The email must be valid and pertain Wolox');
+    throw errors.emailInvalid;
   } else {
     if (!(validator.isAlphanumeric(password) && password.length > 8)) {
-      throw errors.passwordInvalid('The password must be alphanumeric and length greather than 8');
+      throw errors.passwordInvalid;
     }
   }
 };
@@ -26,26 +30,29 @@ exports.create = (req, res, next) => {
         email: req.body.email
       }
     : {};
-  try {
-    validate(user.email, user.password);
-  } catch (e) {
-    return next(e);
-  }
-  bcrypt
-    .hash(user.password, saltRounds)
-    .then(hash => {
-      user.password = hash;
-      User.createModel(user)
-        .then(u => {
-          logger.info(user.username);
-          res.status(200);
-          res.end();
+  validate(user);
+  validateRestrictions(user.email, user.password);
+  User.getByEmail(user.email).then(exist => {
+    if (!exist) {
+      bcrypt
+        .hash(user.password, saltRounds)
+        .then(hash => {
+          user.password = hash;
+          User.createModel(user)
+            .then(u => {
+              logger.info(user.username);
+              res.status(200);
+              res.end();
+            })
+            .catch(err => {
+              next(err);
+            });
         })
         .catch(err => {
-          next(err);
+          next(errors.defaultError(err));
         });
-    })
-    .catch(err => {
-      next(errors.defaultError(err));
-    });
+    } else {
+      throw errors.existsUser;
+    }
+  });
 };
