@@ -42,14 +42,6 @@ const init = () => {
     );
   }
 
-  app.get('/users', function(req, res) {
-    const id = req.param;
-    const nombre = req.param.nombre;
-    const geo = req.param.geo;
-    console.log(id,nombre,geo);
-    res.send(id, nombre, geo);
-  });
-
   Promise.resolve()
     .then(() => {
       if (!config.isTesting) {
