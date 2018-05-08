@@ -32,10 +32,10 @@ exports.create = (req, res, next) => {
         email: req.body.email
       }
     : {};
-  let validation = validate(user.firstName, user.lastName, user.password, user.email);
+  const validation = validate(user.firstName, user.lastName, user.password, user.email);
   if (validation.success) {
-    validation = validateRestrictions(user.email, user.password);
-    if (validation.success) {
+    const checkRestrictions = validateRestrictions(user.email, user.password);
+    if (checkRestrictions.success) {
       return Hash.getHash(user.password, saltRounds)
         .then(newPassword => {
           user.password = newPassword;
@@ -54,7 +54,7 @@ exports.create = (req, res, next) => {
           next(errors.defaultError(err));
         });
     } else {
-      next(errors.defaultError(validation.reason));
+      next(errors.defaultError(checkRestrictions.reason));
     }
   } else {
     next(errors.defaultError(validation.reason));
