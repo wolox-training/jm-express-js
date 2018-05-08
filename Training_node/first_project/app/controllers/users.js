@@ -1,19 +1,25 @@
-'use strict';
-
 const User = require('../models/').user,
   validator = require('validator'),
-  bcrypt = require('bcryptjs'),
+  Hash = require('../services/bcrypt'),
   errors = require('../errors'),
   logger = require('../logger');
 
-const validate = (email, password) => {
+const validateRestrictions = (email, password) => {
   if (!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'))) {
-    throw errors.emailInvalid('The email must be valid and pertain Wolox');
+    return { success: false, reason: 'The email must be valid and pertain Wolox' };
   } else {
     if (!(validator.isAlphanumeric(password) && password.length > 8)) {
-      throw errors.passwordInvalid('The password must be alphanumeric and length greather than 8');
+      return { success: false, reason: 'The password must be alphanumeric and length greather than 8' };
+    } else {
+      return { success: true };
     }
   }
+};
+
+const validate = (firstName, lastName, password, email) => {
+  return !firstName || !lastName || !password || !email
+    ? { success: false, reason: 'The fields first name, last name, password and email are required' }
+    : { success: true };
 };
 
 exports.create = (req, res, next) => {
@@ -26,26 +32,31 @@ exports.create = (req, res, next) => {
         email: req.body.email
       }
     : {};
-  try {
-    validate(user.email, user.password);
-  } catch (e) {
-    return next(e);
-  }
-  bcrypt
-    .hash(user.password, saltRounds)
-    .then(hash => {
-      user.password = hash;
-      User.createModel(user)
-        .then(u => {
-          logger.info(user.username);
-          res.status(200);
-          res.end();
+  let validation = validate(user.firstName, user.lastName, user.password, user.email);
+  if (validation.success) {
+    validation = validateRestrictions(user.email, user.password);
+    if (validation.success) {
+      return Hash.getHash(user.password, saltRounds)
+        .then(newPassword => {
+          user.password = newPassword;
+          User.createModel(user)
+            .then(u => {
+              logger.info(user.email);
+              res.send(user.email);
+              res.status(200);
+              res.end();
+            })
+            .catch(err => {
+              next(err);
+            });
         })
         .catch(err => {
-          next(err);
+          next(errors.defaultError(err));
         });
-    })
-    .catch(err => {
-      next(errors.defaultError(err));
-    });
+    } else {
+      next(errors.defaultError(validation.reason));
+    }
+  } else {
+    next(errors.defaultError(validation.reason));
+  }
 };
