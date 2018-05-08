@@ -1,23 +1,25 @@
-'use strict';
-
 const User = require('../models/').user,
   validator = require('validator'),
-  bcrypt = require('bcryptjs'),
+  Hash = require('../services/bcrypt'),
   errors = require('../errors'),
   logger = require('../logger');
 
-const validate = user => {
-
-  if (!user.firstName || !user.lastName || !user.password || !user.email) throw errors.requiredFields;
-};
 const validateRestrictions = (email, password) => {
   if (!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'))) {
-    throw errors.emailInvalid;
+    return { success: false, reason: 'The email must be valid and pertain Wolox' };
   } else {
     if (!(validator.isAlphanumeric(password) && password.length > 8)) {
-      throw errors.passwordInvalid;
+      return { success: false, reason: 'The password must be alphanumeric and length greather than 8' };
+    } else {
+      return { success: true };
     }
   }
+};
+
+const validate = (firstName, lastName, password, email) => {
+  return !firstName || !lastName || !password || !email
+    ? { success: false, reason: 'The fields first name, last name, password and email are required' }
+    : { success: true };
 };
 
 exports.create = (req, res, next) => {
@@ -30,17 +32,17 @@ exports.create = (req, res, next) => {
         email: req.body.email
       }
     : {};
-  validate(user);
-  validateRestrictions(user.email, user.password);
-  User.getByEmail(user.email).then(exist => {
-    if (!exist) {
-      bcrypt
-        .hash(user.password, saltRounds)
-        .then(hash => {
-          user.password = hash;
+  const validation = validate(user.firstName, user.lastName, user.password, user.email);
+  if (validation.success) {
+    const checkRestrictions = validateRestrictions(user.email, user.password);
+    if (checkRestrictions.success) {
+      return Hash.getHash(user.password, saltRounds)
+        .then(newPassword => {
+          user.password = newPassword;
           User.createModel(user)
             .then(u => {
-              logger.info(user.username);
+              logger.info(user.email);
+              res.send(user.email);
               res.status(200);
               res.end();
             })
@@ -52,7 +54,9 @@ exports.create = (req, res, next) => {
           next(errors.defaultError(err));
         });
     } else {
-      throw errors.existsUser;
+      next(errors.defaultError(checkRestrictions.reason));
     }
-  });
+  } else {
+    next(errors.defaultError(validation.reason));
+  }
 };
