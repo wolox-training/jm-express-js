@@ -39,16 +39,21 @@ exports.create = (req, res, next) => {
       return Hash.getHash(user.password, saltRounds)
         .then(newPassword => {
           user.password = newPassword;
-          User.createModel(user)
-            .then(u => {
-              logger.info(user.email);
-              res.send(user.email);
-              res.status(200);
-              res.end();
-            })
-            .catch(err => {
-              next(err);
-            });
+          User.getByEmail(user.email).then(exist => {
+            if (!exist) {
+              User.createModel(user)
+                .then(u => {
+                  res.send(user.email);
+                  res.status(200);
+                  res.end();
+                })
+                .catch(err => {
+                  next(err);
+                });
+            } else {
+              next(errors.existsUser);
+            }
+          });
         })
         .catch(err => {
           next(errors.defaultError(err));
