@@ -39,9 +39,9 @@ exports.create = (req, res, next) => {
       return Hash.getHash(user.password, saltRounds)
         .then(newPassword => {
           user.password = newPassword;
-          User.getByEmail(user.email).then(exist => {
+          return User.getByEmail(user.email).then(exist => {
             if (!exist) {
-              User.createModel(user)
+              return User.createModel(user)
                 .then(u => {
                   res.send(user.email);
                   res.status(200);
