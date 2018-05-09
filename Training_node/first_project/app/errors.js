@@ -11,13 +11,8 @@ exports.databaseError = message => ({
   message,
   internalCode: exports.DATABASE_ERROR
 });
-exports.EMAIL_INVALID = 'email_invalid';
-exports.emailInvalid = message => ({
-  message,
-  internalCode: exports.EMAIL_INVALID
-});
-exports.PASSWORD_INVALID = 'invalid_password';
-exports.passwordInvalid = message => ({
-  message,
-  internalCode: exports.PASSWORD_INVALID
-});
+exports.EXISTS_USER = 'exists_user';
+exports.existsUser = {
+  message: 'A user already exists with this email',
+  internalCode: exports.EXISTS_USER
+};

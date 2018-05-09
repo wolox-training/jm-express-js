@@ -19,7 +19,7 @@ services:
 
 before_script:
   - cd Training_node/first_project
-  - psql -c "CREATE DATABASE first_project;" -U postgres
-  - psql -c "CREATE ROLE first_project WITH SUPERUSER CREATEDB LOGIN PASSWORD 'first_project';" -d first_project
+  - psql -c "CREATE DATABASE first_project_test;" -U postgres
+  - psql -c "CREATE ROLE first_project_test WITH SUPERUSER CREATEDB LOGIN PASSWORD 'first_project_test';" -d first_project_test
   - npm install
   - npm run migrations
