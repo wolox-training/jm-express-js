@@ -2,10 +2,15 @@ const User = require('../models/').user,
   validator = require('validator'),
   Hash = require('../services/bcrypt'),
   errors = require('../errors'),
+  sessionManager = require('./../services/sessionManager'),
   logger = require('../logger');
 
+const validateEmail = email => {
+  return !!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'));
+};
+// { success: false, reason: 'The email must be valid and pertain Wolox' }
 const validateRestrictions = (email, password) => {
-  if (!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'))) {
+  if (!validateEmail(email)) {
     return { success: false, reason: 'The email must be valid and pertain Wolox' };
   } else {
     if (!(validator.isAlphanumeric(password) && password.length > 8)) {
@@ -20,6 +25,39 @@ const validate = (firstName, lastName, password, email) => {
   return !firstName || !lastName || !password || !email
     ? { success: false, reason: 'The fields first name, last name, password and email are required' }
     : { success: true };
+};
+
+exports.login = (req, res, next) => {
+  const user = req.body
+    ? {
+        email: req.body.email,
+        password: req.body.password
+      }
+    : {};
+  if (user.email && user.password) {
+    if (validateEmail(user.email)) {
+      User.getByEmail(user.email).then(u => {
+        if (u) {
+          return Hash.passwordsEquals(user.password, u.password).then(isValid => {
+            if (isValid) {
+              const auth = sessionManager.encode(u.email);
+              res.status(200);
+              res.set(sessionManager.HEADER_NAME, auth);
+              res.send(u);
+            } else {
+              next(errors.incorrect_user_password);
+            }
+          });
+        } else {
+          next(errors.incorrect_user_password);
+        }
+      });
+    } else {
+      next(errors.defaultError('The email must be valid and pertain Wolox'));
+    }
+  } else {
+    next(errors.defaultError('The fields email and password are required'));
+  }
 };
 
 exports.create = (req, res, next) => {

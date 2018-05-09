@@ -1,3 +1,21 @@
+const Hash = require('../app/services/bcrypt'),
+  User = require('../app/models').user;
+
 exports.execute = () => {
-  // This function should create data for testing and return a promise
+  return Hash.getHash('hola12345', 10)
+    .then(hash => {
+      const data = [];
+      data.push(
+        User.create({
+          firstName: 'julian',
+          lastName: 'molina',
+          email: 'julian.molina@gmail.com',
+          password: hash
+        })
+      );
+      return Promise.all(data);
+    })
+    .catch(err => {
+      throw err;
+    });
 };

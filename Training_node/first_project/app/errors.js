@@ -16,3 +16,8 @@ exports.existsUser = {
   message: 'A user already exists with this email',
   internalCode: exports.EXISTS_USER
 };
+exports.INCORRECT_USER_PASSWORD = 'incorrect_user_password';
+exports.incorrect_user_password = {
+  message: 'The user or password is incorrect',
+  internalCode: exports.DONT_EXISTS_USER
+};
