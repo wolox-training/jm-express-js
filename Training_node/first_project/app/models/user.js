@@ -43,6 +43,16 @@ module.exports = (sequelize, DataTypes) => {
   User.getByEmail = email => {
     return User.getOne({ email });
   };
+  User.getCountUsers = () => {
+    return User.count().catch(err => {
+      throw errors.databaseError(err.detail);
+    });
+  };
+  User.getUsers = (count, off = 0) => {
+    return User.findAll({ limit: count, offset: off }).catch(err => {
+      throw errors.databaseError(err.detail);
+    });
+  };
   User.associate = function(models) {};
   return User;
 };

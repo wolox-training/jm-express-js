@@ -10,5 +10,5 @@ exports.encode = toEncode => {
 };
 
 exports.decode = toDecode => {
-  return jwt.decode(toDecode, SECRET);
+  return jwt.decode(toDecode, 'asdadasads');
 };

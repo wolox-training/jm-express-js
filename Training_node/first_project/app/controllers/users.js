@@ -103,3 +103,31 @@ exports.create = (req, res, next) => {
     next(errors.defaultError(validation.reason));
   }
 };
+
+exports.loggedUser = (req, res, next) => {
+  if (req.query.limit && req.query.page) {
+    const limitInt = parseInt(req.query.limit);
+    const pageInt = parseInt(req.query.page);
+    if (pageInt === 1) {
+      return User.getUsers(limitInt).then(u => {
+        res.send({ users: u });
+        res.status(200);
+        res.end();
+      });
+    } else {
+      return User.getCountUsers().then(count => {
+        if (!(limitInt * pageInt > count)) {
+          return User.getUsers(limitInt, limitInt * pageInt - 1).then(u => {
+            res.send({ users: u });
+            res.status(200);
+            res.end();
+          });
+        } else {
+          next(errors.defaultError('Page not found'));
+        }
+      });
+    }
+  } else {
+    next(errors.defaultError('The fields page and limit are required'));
+  }
+};
