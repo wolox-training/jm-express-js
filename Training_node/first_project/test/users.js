@@ -39,14 +39,13 @@ describe('/users/sessions POST', () => {
       .then(() => done());
   });
 
-  it('should be successful', done => {
+  it('should be successful login', done => {
     successfulLogin()
       .then(res => {
         res.should.have.status(200);
         res.should.be.json;
         res.body.should.have.property('firstName');
         res.body.should.have.property('lastName');
-        res.body.should.have.property('username');
         res.body.should.have.property('email');
         res.body.should.have.property('password');
         res.headers.should.have.property(sessionManager.HEADER_NAME);

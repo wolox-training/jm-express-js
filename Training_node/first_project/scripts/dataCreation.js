@@ -9,7 +9,7 @@ exports.execute = () => {
         User.create({
           firstName: 'julian',
           lastName: 'molina',
-          email: 'julian.molina@gmail.com',
+          email: 'julian.molina@wolox.com.ar',
           password: hash
         })
       );
