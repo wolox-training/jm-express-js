@@ -104,7 +104,7 @@ exports.create = (req, res, next) => {
   }
 };
 
-exports.loggedUser = (req, res, next) => {
+exports.getAll = (req, res, next) => {
   if (req.query.limit && req.query.page) {
     const limitInt = parseInt(req.query.limit);
     const pageInt = parseInt(req.query.page);

@@ -5,5 +5,5 @@ exports.init = app => {
   // Users
   app.post('/users', [], users.create);
   app.post('/users/sessions', [], users.login);
-  app.get('/users', [auth.secure], users.loggedUser);
+  app.get('/users', [auth.secure], users.getAll);
 };
