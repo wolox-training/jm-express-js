@@ -2,10 +2,21 @@ const User = require('../models/').user,
   validator = require('validator'),
   Hash = require('../services/bcrypt'),
   errors = require('../errors'),
+  sessionManager = require('./../services/sessionManager'),
   logger = require('../logger');
 
+const validateEmail = email => {
+  return !!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'));
+};
+const validateEmailPassword = (email, password) => {
+  if (email && password) {
+    if (validateEmail(email)) return { success: true };
+    else return { success: false, reason: 'The email must be valid and pertain Wolox' };
+  }
+  return { success: false, reason: 'The fields email and password are required' };
+};
 const validateRestrictions = (email, password) => {
-  if (!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'))) {
+  if (!validateEmail(email)) {
     return { success: false, reason: 'The email must be valid and pertain Wolox' };
   } else {
     if (!(validator.isAlphanumeric(password) && password.length > 8)) {
@@ -20,6 +31,36 @@ const validate = (firstName, lastName, password, email) => {
   return !firstName || !lastName || !password || !email
     ? { success: false, reason: 'The fields first name, last name, password and email are required' }
     : { success: true };
+};
+
+exports.login = (req, res, next) => {
+  const user = req.body
+    ? {
+        email: req.body.email,
+        password: req.body.password
+      }
+    : {};
+  const result = validateEmailPassword(user.email, user.password);
+  if (result.success) {
+    return User.getByEmail(user.email).then(u => {
+      if (u) {
+        return Hash.passwordsEquals(user.password, u.password).then(isValid => {
+          if (isValid) {
+            const auth = sessionManager.encode(u.email);
+            res.status(200);
+            res.set(sessionManager.HEADER_NAME, auth);
+            res.send(u);
+          } else {
+            next(errors.incorrect_user_password);
+          }
+        });
+      } else {
+        next(errors.incorrect_user_password);
+      }
+    });
+  } else {
+    next(errors.defaultError(result.reason));
+  }
 };
 
 exports.create = (req, res, next) => {
