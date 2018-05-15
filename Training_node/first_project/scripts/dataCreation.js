@@ -8,6 +8,14 @@ exports.execute = () => {
       data.push(
         User.create({
           firstName: 'julian',
+          lastName: 'sevilla',
+          email: 'julian.sevilla@wolox.com.ar',
+          password: hash
+        })
+      );
+      data.push(
+        User.create({
+          firstName: 'julian',
           lastName: 'molina',
           email: 'julian.molina@wolox.com.ar',
           password: hash

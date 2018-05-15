@@ -106,3 +106,21 @@ exports.create = (req, res, next) => {
     next(errors.defaultError(validation.reason));
   }
 };
+
+exports.getAll = (req, res, next) => {
+  if (req.query.limit && req.query.page) {
+    const limitInt = parseInt(req.query.limit);
+    const pageInt = parseInt(req.query.page);
+    return User.getUsers(limitInt, pageInt)
+      .then(u => {
+        res.send({ users: u });
+        res.status(200);
+        res.end();
+      })
+      .catch(err => {
+        next(err);
+      });
+  } else {
+    next(errors.defaultError('The fields page and limit are required'));
+  }
+};
