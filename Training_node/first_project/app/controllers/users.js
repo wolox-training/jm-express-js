@@ -26,7 +26,7 @@ const validate = (firstName, lastName, password, email) => {
     : { success: true };
 };
 
-const createModelAux = (user, res, next) => {
+const createModel = (user, res, next) => {
   return User.createModel(user)
     .then(u => {
       res.send(user.email);
@@ -48,7 +48,7 @@ const setAdmin = (user, res, next) => {
       next(err);
     });
 };
-const createAux = (req, res, next, admin = false) => {
+const create = (req, res, next, admin = false) => {
   const saltRounds = 10;
   const user = req.body
     ? {
@@ -68,10 +68,10 @@ const createAux = (req, res, next, admin = false) => {
           return User.getByEmail(user.email).then(exist => {
             if (admin) {
               user.admin = true;
-              return exist ? setAdmin(exist, res, next) : createModelAux(user, res, next);
+              return exist ? setAdmin(exist, res, next) : createModel(user, res, next);
             } else {
               if (!exist) {
-                return createModelAux(user, res, next);
+                return createModel(user, res, next);
               } else {
                 next(errors.existsUser);
               }
@@ -122,11 +122,11 @@ exports.login = (req, res, next) => {
   }
 };
 exports.createAdmin = (req, res, next) => {
-  return createAux(req, res, next, true);
+  return create(req, res, next, true);
 };
 
-exports.create = (req, res, next) => {
-  return createAux(req, res, next);
+exports.createRegular = (req, res, next) => {
+  return create(req, res, next);
 };
 
 exports.getAll = (req, res, next) => {
