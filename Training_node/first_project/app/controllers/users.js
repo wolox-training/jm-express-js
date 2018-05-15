@@ -6,25 +6,29 @@ const User = require('../models/').user,
   logger = require('../logger');
 
 const validateEmail = email => {
-  return !!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'));
+  return validator.isEmail(email) && validator.contains(email, '@wolox.com.ar');
 };
-const validateEmailPassword = (email, password) => {
-  if (email && password) {
-    if (validateEmail(email)) return { success: true };
-    else return { success: false, reason: 'The email must be valid and pertain Wolox' };
-  }
-  return { success: false, reason: 'The fields email and password are required' };
+const validatePassword = password => {
+  return validator.isAlphanumeric(password) && password.length > 8;
 };
+
 const validateRestrictions = (email, password) => {
   if (!validateEmail(email)) {
     return { success: false, reason: 'The email must be valid and pertain Wolox' };
   } else {
-    if (!(validator.isAlphanumeric(password) && password.length > 8)) {
+    if (!validatePassword(password)) {
       return { success: false, reason: 'The password must be alphanumeric and length greather than 8' };
     } else {
       return { success: true };
     }
   }
+};
+
+const validateEmailPassword = (email, password) => {
+  if (email && password) {
+    return validateRestrictions(email, password);
+  }
+  return { success: false, reason: 'The fields email and password are required' };
 };
 
 const validate = (firstName, lastName, password, email) => {

@@ -1,10 +1,11 @@
 const sessionManager = require('./../services/sessionManager'),
-  User = require('../models').user;
+  User = require('../models').user,
+  logger = require('../logger');
 
-const authAdmin = (req, res, next, isAdmin = false) => {
-  const auth = req.headers[sessionManager.HEADER_NAME];
-  if (auth) {
-    const user = sessionManager.decode(auth);
+const auth = (req, res, next, isAdmin = false) => {
+  const authHeader = req.headers[sessionManager.HEADER_NAME];
+  if (authHeader) {
+    const user = sessionManager.decode(authHeader);
     return User.getByEmail(user)
       .then(u => {
         if (u) {
@@ -32,10 +33,10 @@ const authAdmin = (req, res, next, isAdmin = false) => {
   }
 };
 
-exports.secure = (req, res, next) => {
-  authAdmin(req, res, next);
+exports.secureRegular = (req, res, next) => {
+  auth(req, res, next);
 };
 
 exports.secureAdmin = (req, res, next) => {
-  authAdmin(req, res, next, true);
+  auth(req, res, next, true);
 };
