@@ -41,7 +41,9 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
   User.getByEmail = email => {
-    return User.getOne({ email });
+    return User.getOne({ email }).catch(err => {
+      throw errors.databaseError(err.detail);
+    });
   };
   User.getCountUsers = () => {
     return User.count().catch(err => {
