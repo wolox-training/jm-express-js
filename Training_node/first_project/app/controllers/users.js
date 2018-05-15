@@ -8,7 +8,6 @@ const User = require('../models/').user,
 const validateEmail = email => {
   return !!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'));
 };
-// { success: false, reason: 'The email must be valid and pertain Wolox' }
 const validateRestrictions = (email, password) => {
   if (!validateEmail(email)) {
     return { success: false, reason: 'The email must be valid and pertain Wolox' };
