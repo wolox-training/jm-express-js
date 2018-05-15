@@ -44,16 +44,23 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
   User.getByEmail = email => {
-    return User.getOne({ email });
+    return User.getOne({ email }).catch(err => {
+      throw errors.databaseError(err.detail);
+    });
   };
   User.getCountUsers = () => {
     return User.count().catch(err => {
       throw errors.databaseError(err.detail);
     });
   };
-  User.getUsers = (count, off = 0) => {
-    return User.findAll({ limit: count, offset: off }).catch(err => {
-      throw errors.databaseError(err.detail);
+  User.getUsers = (count, page) => {
+    return User.getCountUsers().then(countUsers => {
+      if (page === 1) {
+        return User.findAll({ limit: count });
+      } else {
+        if (!(count * page > countUsers)) return User.findAll({ limit: count, offset: count * page - 1 });
+        else throw errors.defaultError('Page not found');
+      }
     });
   };
   User.setAdmin = idUser => {

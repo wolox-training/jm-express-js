@@ -8,6 +8,13 @@ const User = require('../models/').user,
 const validateEmail = email => {
   return !!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'));
 };
+const validateEmailPassword = (email, password) => {
+  if (email && password) {
+    if (validateEmail(email)) return { success: true };
+    else return { success: false, reason: 'The email must be valid and pertain Wolox' };
+  }
+  return { success: false, reason: 'The fields email and password are required' };
+};
 const validateRestrictions = (email, password) => {
   if (!validateEmail(email)) {
     return { success: false, reason: 'The email must be valid and pertain Wolox' };
@@ -96,29 +103,26 @@ exports.login = (req, res, next) => {
         password: req.body.password
       }
     : {};
-  if (user.email && user.password) {
-    if (validateEmail(user.email)) {
-      User.getByEmail(user.email).then(u => {
-        if (u) {
-          return Hash.passwordsEquals(user.password, u.password).then(isValid => {
-            if (isValid) {
-              const auth = sessionManager.encode(u.email);
-              res.status(200);
-              res.set(sessionManager.HEADER_NAME, auth);
-              res.send(u);
-            } else {
-              next(errors.incorrect_user_password);
-            }
-          });
-        } else {
-          next(errors.incorrect_user_password);
-        }
-      });
-    } else {
-      next(errors.defaultError('The email must be valid and pertain Wolox'));
-    }
+  const result = validateEmailPassword(user.email, user.password);
+  if (result.success) {
+    return User.getByEmail(user.email).then(u => {
+      if (u) {
+        return Hash.passwordsEquals(user.password, u.password).then(isValid => {
+          if (isValid) {
+            const auth = sessionManager.encode(u.email);
+            res.status(200);
+            res.set(sessionManager.HEADER_NAME, auth);
+            res.send(u);
+          } else {
+            next(errors.incorrect_user_password);
+          }
+        });
+      } else {
+        next(errors.incorrect_user_password);
+      }
+    });
   } else {
-    next(errors.defaultError('The fields email and password are required'));
+    next(errors.defaultError(result.reason));
   }
 };
 exports.createAdmin = (req, res, next) => {
@@ -133,25 +137,15 @@ exports.getAll = (req, res, next) => {
   if (req.query.limit && req.query.page) {
     const limitInt = parseInt(req.query.limit);
     const pageInt = parseInt(req.query.page);
-    if (pageInt === 1) {
-      return User.getUsers(limitInt).then(u => {
+    return User.getUsers(limitInt, pageInt)
+      .then(u => {
         res.send({ users: u });
         res.status(200);
         res.end();
+      })
+      .catch(err => {
+        next(err);
       });
-    } else {
-      return User.getCountUsers().then(count => {
-        if (!(limitInt * pageInt > count)) {
-          return User.getUsers(limitInt, limitInt * pageInt - 1).then(u => {
-            res.send({ users: u });
-            res.status(200);
-            res.end();
-          });
-        } else {
-          next(errors.defaultError('Page not found'));
-        }
-      });
-    }
   } else {
     next(errors.defaultError('The fields page and limit are required'));
   }
