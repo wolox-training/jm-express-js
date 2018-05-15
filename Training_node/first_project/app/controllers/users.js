@@ -8,7 +8,6 @@ const User = require('../models/').user,
 const validateEmail = email => {
   return !!(validator.isEmail(email) && validator.contains(email, '@wolox.com.ar'));
 };
-// { success: false, reason: 'The email must be valid and pertain Wolox' }
 const validateRestrictions = (email, password) => {
   if (!validateEmail(email)) {
     return { success: false, reason: 'The email must be valid and pertain Wolox' };
@@ -108,25 +107,15 @@ exports.getAll = (req, res, next) => {
   if (req.query.limit && req.query.page) {
     const limitInt = parseInt(req.query.limit);
     const pageInt = parseInt(req.query.page);
-    if (pageInt === 1) {
-      return User.getUsers(limitInt).then(u => {
+    return User.getUsers(limitInt, pageInt)
+      .then(u => {
         res.send({ users: u });
         res.status(200);
         res.end();
+      })
+      .catch(err => {
+        next(err);
       });
-    } else {
-      return User.getCountUsers().then(count => {
-        if (!(limitInt * pageInt > count)) {
-          return User.getUsers(limitInt, limitInt * pageInt - 1).then(u => {
-            res.send({ users: u });
-            res.status(200);
-            res.end();
-          });
-        } else {
-          next(errors.defaultError('Page not found'));
-        }
-      });
-    }
   } else {
     next(errors.defaultError('The fields page and limit are required'));
   }
