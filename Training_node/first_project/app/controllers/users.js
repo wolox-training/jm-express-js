@@ -26,6 +26,69 @@ const validate = (firstName, lastName, password, email) => {
     : { success: true };
 };
 
+const createModelAux = (user, res, next) => {
+  return User.createModel(user)
+    .then(u => {
+      res.send(user.email);
+      res.status(200);
+      res.end();
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+const setAdmin = (user, res, next) => {
+  return User.setAdmin(user.id)
+    .then(u => {
+      res.send(user.email);
+      res.status(200);
+      res.end();
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+const createAux = (req, res, next, admin = false) => {
+  const saltRounds = 10;
+  const user = req.body
+    ? {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        password: req.body.password,
+        email: req.body.email
+      }
+    : {};
+  const validation = validate(user.firstName, user.lastName, user.password, user.email);
+  if (validation.success) {
+    const checkRestrictions = validateRestrictions(user.email, user.password);
+    if (checkRestrictions.success) {
+      return Hash.getHash(user.password, saltRounds)
+        .then(newPassword => {
+          user.password = newPassword;
+          return User.getByEmail(user.email).then(exist => {
+            if (admin) {
+              user.admin = true;
+              return exist ? setAdmin(exist, res, next) : createModelAux(user, res, next);
+            } else {
+              if (!exist) {
+                return createModelAux(user, res, next);
+              } else {
+                next(errors.existsUser);
+              }
+            }
+          });
+        })
+        .catch(err => {
+          next(errors.defaultError(err));
+        });
+    } else {
+      next(errors.defaultError(checkRestrictions.reason));
+    }
+  } else {
+    next(errors.defaultError(validation.reason));
+  }
+};
+
 exports.login = (req, res, next) => {
   const user = req.body
     ? {
@@ -58,49 +121,12 @@ exports.login = (req, res, next) => {
     next(errors.defaultError('The fields email and password are required'));
   }
 };
+exports.createAdmin = (req, res, next) => {
+  return createAux(req, res, next, true);
+};
 
 exports.create = (req, res, next) => {
-  const saltRounds = 10;
-  const user = req.body
-    ? {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        password: req.body.password,
-        email: req.body.email
-      }
-    : {};
-  const validation = validate(user.firstName, user.lastName, user.password, user.email);
-  if (validation.success) {
-    const checkRestrictions = validateRestrictions(user.email, user.password);
-    if (checkRestrictions.success) {
-      return Hash.getHash(user.password, saltRounds)
-        .then(newPassword => {
-          user.password = newPassword;
-          return User.getByEmail(user.email).then(exist => {
-            if (!exist) {
-              return User.createModel(user)
-                .then(u => {
-                  res.send(user.email);
-                  res.status(200);
-                  res.end();
-                })
-                .catch(err => {
-                  next(err);
-                });
-            } else {
-              next(errors.existsUser);
-            }
-          });
-        })
-        .catch(err => {
-          next(errors.defaultError(err));
-        });
-    } else {
-      next(errors.defaultError(checkRestrictions.reason));
-    }
-  } else {
-    next(errors.defaultError(validation.reason));
-  }
+  return createAux(req, res, next);
 };
 
 exports.getAll = (req, res, next) => {

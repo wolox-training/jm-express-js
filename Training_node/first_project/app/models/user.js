@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      admin: {
+        type: DataTypes.BOOLEAN
       }
     },
     {
@@ -50,6 +53,11 @@ module.exports = (sequelize, DataTypes) => {
   };
   User.getUsers = (count, off = 0) => {
     return User.findAll({ limit: count, offset: off }).catch(err => {
+      throw errors.databaseError(err.detail);
+    });
+  };
+  User.setAdmin = idUser => {
+    return User.update({ admin: true }, { where: { id: idUser } }).catch(err => {
       throw errors.databaseError(err.detail);
     });
   };
