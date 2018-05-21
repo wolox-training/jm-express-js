@@ -1,4 +1,5 @@
 const jwt = require('jwt-simple'),
+  logger = require('./../../app/logger'),
   config = require('./../../config');
 
 const SECRET = config.common.session.secret;
