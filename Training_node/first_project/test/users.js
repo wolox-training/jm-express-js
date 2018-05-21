@@ -2,6 +2,7 @@ const chai = require('chai'),
   dictum = require('dictum.js'),
   server = require('./../app'),
   sessionManager = require('./../app/services/sessionManager'),
+  User = require('../app/models').user,
   should = chai.should();
 
 const successfulLogin = cb => {
@@ -29,7 +30,7 @@ describe('/users/sessions POST', () => {
     chai
       .request(server)
       .post('/users/sessions')
-      .send({ username: 'julian.molina@wolox.com', password: 'invalid' })
+      .send({ email: 'julian.molina@wolox.com.ar', password: 'invalid' })
       .catch(err => {
         err.should.have.status(400);
         err.response.should.be.json;
@@ -61,10 +62,10 @@ describe('/users POST', () => {
       .request(server)
       .post('/users')
       .send({
-        firstName: 'julian',
-        lastName: 'sevilla',
-        password: 'incorrect',
-        email: 'julian.sevilla@wolox.com.ar'
+        firstName: 'ignacio',
+        lastName: 'nieva',
+        password: 'false',
+        email: 'ignacio.nieva@wolox.com.ar'
       })
       .catch(err => {
         err.should.have.status(400);
@@ -196,6 +197,109 @@ describe('/users GET', () => {
             err.response.should.be.json;
             err.response.body.should.have.property('message');
             err.response.body.should.have.property('internal_code');
+          });
+      })
+      .then(() => done());
+  });
+});
+
+describe('/admin/users POST', () => {
+  it('should fail because the user logged in is doesnt admin', done => {
+    chai
+      .request(server)
+      .post('/admin/users')
+      .send({ email: 'julian.sevilla@wolox.com.ar', password: 'hola12345' })
+      .catch(err => {
+        err.should.have.status(401);
+      })
+      .then(() => done());
+  });
+
+  it('should fail because the password is invalid', done => {
+    successfulLogin().then(loginRes => {
+      return chai
+        .request(server)
+        .post('/admin/users')
+        .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+        .send({
+          firstName: 'julian',
+          lastName: 'sevilla',
+          password: 'false',
+          email: 'julian.sevilla@wolox.com.ar'
+        })
+        .catch(err => {
+          err.should.have.status(400);
+          err.response.should.be.json;
+          err.response.body.should.have.property('message');
+          err.response.body.should.have.property('internal_code');
+        })
+        .then(() => done());
+    });
+  });
+
+  it('should fail because the first name was not send', done => {
+    successfulLogin().then(loginRes => {
+      return chai
+        .request(server)
+        .post('/admin/users')
+        .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+        .send({
+          lastName: 'sevilla',
+          password: 'hola12345',
+          email: 'julian.sevilla@wolox.com.ar'
+        })
+        .catch(err => {
+          err.should.have.status(400);
+          err.response.should.be.json;
+          err.response.body.should.have.property('message');
+          err.response.body.should.have.property('internal_code');
+        })
+        .then(() => done());
+    });
+  });
+
+  it('should be successful because the sent user was configured that admin', done => {
+    successfulLogin()
+      .then(loginRes => {
+        return chai
+          .request(server)
+          .post('/admin/users')
+          .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+          .send({
+            firstName: 'pablo',
+            lastName: 'cid',
+            password: 'hola12345',
+            email: 'pablo.cid@wolox.com.ar'
+          })
+          .then(res => {
+            res.should.have.status(200);
+            User.getByEmail('pablo.cid@wolox.com.ar').then(u => {
+              u.admin.should.eql(true);
+            });
+            dictum.chai(res);
+          });
+      })
+      .then(() => done());
+  });
+  it('should be successful creating admin', done => {
+    successfulLogin()
+      .then(loginRes => {
+        return chai
+          .request(server)
+          .post('/admin/users')
+          .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+          .send({
+            firstName: 'gonzalo',
+            lastName: 'escandarani',
+            password: 'hola12345',
+            email: 'gonzalo.escandarani@wolox.com.ar'
+          })
+          .then(res => {
+            res.should.have.status(200);
+            User.getByEmail('gonzalo.escandarani@wolox.com.ar').then(u => {
+              u.admin.should.eql(true);
+            });
+            dictum.chai(res);
           });
       })
       .then(() => done());

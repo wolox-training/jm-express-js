@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      admin: {
+        type: DataTypes.BOOLEAN
       }
     },
     {
@@ -50,14 +53,16 @@ module.exports = (sequelize, DataTypes) => {
       throw errors.databaseError(err.detail);
     });
   };
-  User.getUsers = (count, page) => {
+  User.getUsers = (count = 20, pageUser = 0) => {
     return User.getCountUsers().then(countUsers => {
-      if (page === 1) {
-        return User.findAll({ limit: count });
-      } else {
-        if (!(count * page > countUsers)) return User.findAll({ limit: count, offset: count * page - 1 });
-        else throw errors.defaultError('Page not found');
-      }
+      const pagedb = pageUser - 1;
+      if (!(count * pagedb >= countUsers)) return User.findAll({ limit: count, offset: count * pagedb });
+      else throw errors.defaultError('Page not found');
+    });
+  };
+  User.setAdmin = idUser => {
+    return User.update({ admin: true }, { where: { id: idUser } }).catch(err => {
+      throw errors.databaseError(err.detail);
     });
   };
   User.associate = function(models) {};

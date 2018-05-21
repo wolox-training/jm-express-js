@@ -15,9 +15,18 @@ exports.execute = () => {
       );
       data.push(
         User.create({
+          firstName: 'pablo',
+          lastName: 'cid',
+          email: 'pablo.cid@wolox.com.ar',
+          password: hash
+        })
+      );
+      data.push(
+        User.create({
           firstName: 'julian',
           lastName: 'molina',
           email: 'julian.molina@wolox.com.ar',
+          admin: true,
           password: hash
         })
       );
