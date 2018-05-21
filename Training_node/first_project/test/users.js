@@ -309,29 +309,3 @@ describe('/admin/users POST', () => {
       .then(() => done());
   });
 });
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-nock(`https://jsonplaceholder.typicode.com/albums`).get('').reply(200, [oneAlbum]);
-
-describe('/albumes GET', () => {
-  it('', done => {
-    successfulLogin().then(res => {
-      return chai
-        .request(server)
-        .get('/albumes')
-        .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
-        .then(json => {
-          json.should.have.status(200);
-          json.body.should.have.property('albumes');
-          logger.info(json.body);
-          json.body.albumes.length.should.eqls(100);
-        })
-        .then(() => done());
-    });
-  });
-});
-=======
->>>>>>> list_albumes
-=======
->>>>>>> list_albumes
