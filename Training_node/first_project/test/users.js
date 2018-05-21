@@ -12,11 +12,8 @@ const successfulLogin = cb => {
     .post('/users/sessions')
     .send({ email: 'julian.molina@wolox.com.ar', password: 'hola12345' });
 };
-const oneAlbum = {
-  userId: 1,
-  id: 1,
-  title: 'quidem molestiae enim'
-};
+
+exports.successfulLogin = successfulLogin();
 
 describe('/users/sessions POST', () => {
   it('should fail login because of invalid username', done => {
@@ -310,22 +307,5 @@ describe('/admin/users POST', () => {
           });
       })
       .then(() => done());
-  });
-});
-describe('/albumes GET', () => {
-  it('', done => {
-    successfulLogin().then(res => {
-      return chai
-        .request(server)
-        .get('/albumes')
-        .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
-        .then(json => {
-          json.should.have.status(200);
-          json.body.should.have.property('albumes');
-          logger.info(json.body);
-          json.body.albumes.length.should.eqls(100);
-        })
-        .then(() => done());
-    });
   });
 });
