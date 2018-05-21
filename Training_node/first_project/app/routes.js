@@ -9,4 +9,5 @@ exports.init = app => {
   app.get('/users', [auth.secureRegular], users.getAll);
   app.post('/admin/users', [auth.secureAdmin], users.createAdmin);
   app.get('/albums', [auth.secureRegular], albums.getAll);
+  app.post('/albums/:id', [], albums.getById);
 };
