@@ -50,8 +50,8 @@ const config = {
       environment: process.env.ROLLBAR_ENV
     },
     urlRequests: {
-      base: 'https://jsonplaceholder.typicode.com',
-      albumList: '/albums'
+      base: process.env.REQUEST_BASE,
+      albumList: process.env.REQUEST_ALBUMLIST
     }
   }
 };

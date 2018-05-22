@@ -26,6 +26,7 @@ describe('/albums GET', () => {
         .get('/albums')
         .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
         .then(json => {
+          logger.info(json.body);
           json.should.have.status(200);
           json.body.should.have.property('albums');
           json.body.albums.should.include(oneAlbum);

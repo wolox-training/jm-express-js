@@ -26,7 +26,7 @@ const auth = (req, res, next, isAdmin = false) => {
           res.end();
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => logger.error(err));
   } else {
     res.status(401);
     res.end();
