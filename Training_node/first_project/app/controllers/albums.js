@@ -23,8 +23,7 @@ exports.getAll = (req, res, next) => {
 exports.getById = (req, res, next) => {
   const urlId = `${config.common.urlRequests.base}${req.url}`;
   const email = sessionManager.decode(req.headers.authorization);
-  return User
-    .getByEmail(email)
+  return User.getByEmail(email)
     .then(u => {
       return albumService
         .executeRequest(urlId)

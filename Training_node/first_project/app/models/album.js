@@ -35,9 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
   album.getOne = (user, id) => {
-    logger.info(user, id);
     return album.findOne({ where: { idAlbum: id, userId: user } }).catch(err => {
-      logger.info('ERROR');
       throw errors.databaseError(err.detail);
     });
   };
