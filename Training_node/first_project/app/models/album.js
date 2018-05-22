@@ -1,22 +1,46 @@
 'use strict';
+
+const errors = require('../errors'),
+  logger = require('../logger');
+
 module.exports = (sequelize, DataTypes) => {
-  var album = sequelize.define('album',{
-    idAlbum: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      field: 'id_album'
+  const album = sequelize.define(
+    'album',
+    {
+      idAlbum: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        field: 'id'
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        field: 'user_id'
+      },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
     },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    {
+      paranoid: true,
+      underscored: true
     }
-  },
-  {
-    paranoid: true,
-    underscored: true
-  });
-  album.associate = function(models) {
-    album.hasMany(album_for_users, {as: 'idAlbum'});
+  );
+  album.createModel = newAlbum => {
+    return album.create(newAlbum).catch(err => {
+      throw errors.databaseError(err.message);
+    });
   };
+  album.getOne = (user, id) => {
+    logger.info(user, id);
+    return album.findOne({ where: { idAlbum: id, userId: user } }).catch(err => {
+      logger.info('ERROR');
+      throw errors.databaseError(err.detail);
+    });
+  };
+  album.associate = function(models) {};
   return album;
 };

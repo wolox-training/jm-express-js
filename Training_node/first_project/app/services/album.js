@@ -3,7 +3,7 @@ const errors = require('../errors'),
   logger = require('../logger'),
   config = require('../../config');
 
-exports.execute = url => {
+exports.executeRequest = url => {
   return new Promise((resolve, reject) => {
     request(url, { json: true }, function(error, response, body) {
       if (!error && response.statusCode === 200) {

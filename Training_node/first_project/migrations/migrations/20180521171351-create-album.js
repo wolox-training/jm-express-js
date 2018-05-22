@@ -1,28 +1,31 @@
 'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('albums', {
       id: {
         allowNull: false,
-        autoIncrement: true,
+        autoIncrement: false,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_album: {
+      user_id: {
+        primaryKey: true,
         type: Sequelize.INTEGER,
-        allowNull: false,
-        unique:true
+        references: { model: 'users', key: 'id' }
       },
-      title:{
-        type: Sequelize.STRING,
-        allowNull: false
+      title: {
+        type: Sequelize.STRING
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
+        type: Sequelize.DATE
+      },
+      deleted_at: {
         type: Sequelize.DATE
       }
     });
