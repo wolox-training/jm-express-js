@@ -48,6 +48,10 @@ const config = {
     rollbar: {
       accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
       environment: process.env.ROLLBAR_ENV
+    },
+    urlRequests: {
+      base: process.env.REQUEST_BASE,
+      albumList: process.env.REQUEST_ALBUMLIST
     }
   }
 };

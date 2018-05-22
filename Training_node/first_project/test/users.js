@@ -2,6 +2,7 @@ const chai = require('chai'),
   dictum = require('dictum.js'),
   server = require('./../app'),
   sessionManager = require('./../app/services/sessionManager'),
+  logger = require('../app/logger'),
   User = require('../app/models').user,
   should = chai.should();
 
@@ -11,6 +12,9 @@ const successfulLogin = cb => {
     .post('/users/sessions')
     .send({ email: 'julian.molina@wolox.com.ar', password: 'hola12345' });
 };
+
+exports.successfulLogin = successfulLogin();
+
 describe('/users/sessions POST', () => {
   it('should fail login because of invalid username', done => {
     chai
