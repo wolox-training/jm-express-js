@@ -6,11 +6,11 @@ const chai = require('chai'),
   User = require('../app/models').user,
   should = chai.should();
 
-const successfulLogin = cb => {
+const successfulLogin = (userEmail = 'julian.molina@wolox.com.ar') => {
   return chai
     .request(server)
     .post('/users/sessions')
-    .send({ email: 'julian.molina@wolox.com.ar', password: 'hola12345' });
+    .send({ email: userEmail, password: 'hola12345' });
 };
 
 exports.successfulLogin = successfulLogin();
@@ -307,5 +307,46 @@ describe('/admin/users POST', () => {
           });
       })
       .then(() => done());
+  });
+});
+
+describe('/users/:user_id/albums GET', () => {
+  it('should be successful', done => {
+    successfulLogin().then(res => {
+      return chai
+        .request(server)
+        .post('/albums/2')
+        .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
+        .then(json1 => {
+          successfulLogin().then(res2 => {
+            return chai
+              .request(server)
+              .get('/users/3/albums')
+              .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
+              .then(json => {
+                json.should.have.status(200);
+                json.should.be.json;
+                json.body.should.have.property('albums');
+                json.body.albums.length.should.eqls(1);
+              })
+              .then(() => done());
+          });
+        });
+    });
+  });
+  it('should be fail because the user is not admin and wants to see another users albums ', done => {
+    successfulLogin('julian.sevilla@wolox.com.ar').then(res => {
+      return chai
+        .request(server)
+        .get('/users/3/albums')
+        .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
+        .catch(err => {
+          err.should.have.status(400);
+          err.response.should.be.json;
+          err.response.body.should.have.property('message');
+          err.response.body.should.have.property('internal_code');
+        })
+        .then(() => done());
+    });
   });
 });
