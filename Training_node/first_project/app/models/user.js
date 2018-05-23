@@ -1,6 +1,7 @@
 'use strict';
 
-const errors = require('../errors');
+const errors = require('../errors'),
+  logger = require('../logger');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(

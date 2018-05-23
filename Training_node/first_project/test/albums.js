@@ -21,11 +21,10 @@ const chai = require('chai'),
     title: 'sunt qui excepturi placeat culpa'
   };
 
-nock(albumListUrl)
-  .get('')
-  .reply(200, oneAlbum);
-
 describe('/albums GET', () => {
+  nock(albumListUrl)
+    .get('')
+    .reply(200, oneAlbum);
   it('should be successful', done => {
     testUser.successfulLogin.then(res => {
       return chai
@@ -43,9 +42,12 @@ describe('/albums GET', () => {
 });
 
 describe('/albums/id POST', () => {
-  nock(albumListUrl)
-    .get('/2')
-    .reply(200, albumTwo);
+  beforeEach(() => {
+    nock(albumListUrl)
+      .get('/2')
+      .reply(200, albumTwo);
+  });
+
   it('should be successful', done => {
     testUser.successfulLogin.then(res => {
       return chai
@@ -64,9 +66,6 @@ describe('/albums/id POST', () => {
         .then(() => done());
     });
   });
-  nock(albumListUrl)
-    .get('/2')
-    .reply(200, albumTwo);
 
   it('should fail because the album has already been purchased', done => {
     testUser.successfulLogin.then(res => {
@@ -74,11 +73,17 @@ describe('/albums/id POST', () => {
         .request(server)
         .post('/albums/2')
         .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
-        .catch(err => {
-          err.should.have.status(400);
-          err.response.should.be.json;
-          err.response.body.should.have.property('message');
-          err.response.body.should.have.property('internal_code');
+        .then(json => {
+          return chai
+            .request(server)
+            .post('/albums/2')
+            .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
+            .catch(err => {
+              err.should.have.status(400);
+              err.response.should.be.json;
+              err.response.body.should.have.property('message');
+              err.response.body.should.have.property('internal_code');
+            });
         })
         .then(() => done());
     });

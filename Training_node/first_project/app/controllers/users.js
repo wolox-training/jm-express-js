@@ -101,8 +101,6 @@ const create = (req, res, next, admin = false) => {
   }
 };
 
-// const getAlbums = ()
-
 exports.login = (req, res, next) => {
   const user = req.body
     ? {

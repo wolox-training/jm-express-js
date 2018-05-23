@@ -3,8 +3,21 @@ const chai = require('chai'),
   server = require('./../app'),
   sessionManager = require('./../app/services/sessionManager'),
   logger = require('../app/logger'),
+  nock = require('nock'),
+  config = require('../config'),
   User = require('../app/models').user,
-  should = chai.should();
+  should = chai.should(),
+  albumListUrl = `${config.common.urlRequests.base}${config.common.urlRequests.albumList}`,
+  oneAlbum = {
+    userId: 1,
+    id: 1,
+    title: 'quidem molestiae enim'
+  },
+  albumTwo = {
+    userId: 1,
+    id: 2,
+    title: 'sunt qui excepturi placeat culpa'
+  };
 
 const successfulLogin = (userEmail = 'julian.molina@wolox.com.ar') => {
   return chai
@@ -311,6 +324,11 @@ describe('/admin/users POST', () => {
 });
 
 describe('/users/:user_id/albums GET', () => {
+  beforeEach(() => {
+    nock(albumListUrl)
+      .get('/2')
+      .reply(200, albumTwo);
+  });
   it('should be successful', done => {
     successfulLogin().then(res => {
       return chai
