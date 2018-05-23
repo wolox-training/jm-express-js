@@ -51,7 +51,8 @@ const config = {
     },
     urlRequests: {
       base: process.env.REQUEST_BASE,
-      albumList: process.env.REQUEST_ALBUMLIST
+      albumList: process.env.REQUEST_ALBUMLIST,
+      photos: process.env.REQUEST_PHOTOS
     }
   }
 };

@@ -8,6 +8,7 @@ exports.init = app => {
   app.post('/users/sessions', [], users.login);
   app.get('/users', [auth.secureRegular], users.getAll);
   app.get('/users/:user_id/albums', [auth.secureRegular], users.getAllAlbums);
+  app.get('/users/albums/:id/photos', [auth.secureRegular], users.getPhotos);
   app.post('/admin/users', [auth.secureAdmin], users.createAdmin);
   app.get('/albums', [auth.secureRegular], albums.getAll);
   app.post('/albums/:id', [auth.secureRegular], albums.getById);

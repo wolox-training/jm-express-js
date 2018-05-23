@@ -8,6 +8,7 @@ const chai = require('chai'),
   User = require('../app/models').user,
   should = chai.should(),
   albumListUrl = `${config.common.urlRequests.base}${config.common.urlRequests.albumList}`,
+  photoListUrl = `${config.common.urlRequests.base}${config.common.urlRequests.photos}`,
   oneAlbum = {
     userId: 1,
     id: 1,
@@ -17,6 +18,13 @@ const chai = require('chai'),
     userId: 1,
     id: 2,
     title: 'sunt qui excepturi placeat culpa'
+  },
+  onePhoto = {
+    albumId: 2,
+    id: 51,
+    title: 'non sunt voluptatem placeat consequuntur rem incidunt',
+    url: 'http://placehold.it/600/8e973b',
+    thumbnailUrl: 'http://placehold.it/150/8e973b'
   };
 
 const successfulLogin = (userEmail = 'julian.molina@wolox.com.ar') => {
@@ -358,6 +366,51 @@ describe('/users/:user_id/albums GET', () => {
         .request(server)
         .get('/users/3/albums')
         .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
+        .catch(err => {
+          err.should.have.status(400);
+          err.response.should.be.json;
+          err.response.body.should.have.property('message');
+          err.response.body.should.have.property('internal_code');
+        })
+        .then(() => done());
+    });
+  });
+});
+
+describe('/users/albums/:id/photos GET', () => {
+  beforeEach(() => {
+    nock(config.common.urlRequests.base)
+      .get('/photos?albumId=2')
+      .reply(200, onePhoto);
+  });
+  it('should be successful', done => {
+    successfulLogin().then(res => {
+      return chai
+        .request(server)
+        .post('/albums/2')
+        .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
+        .then(json => {
+          successfulLogin().then(res2 => {
+            return chai
+              .request(server)
+              .get('/users/albums/2/photos')
+              .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
+              .then(json1 => {
+                json1.should.have.status(200);
+                json1.should.be.json;
+                json1.body.should.have.property('photos');
+              })
+              .then(() => done());
+          });
+        });
+    });
+  });
+  it('should be fail because the user cant do the operation', done => {
+    successfulLogin('julian.sevilla@wolox.com.ar').then(res2 => {
+      return chai
+        .request(server)
+        .get('/users/albums/2/photos')
+        .set(sessionManager.HEADER_NAME, res2.headers[sessionManager.HEADER_NAME])
         .catch(err => {
           err.should.have.status(400);
           err.response.should.be.json;

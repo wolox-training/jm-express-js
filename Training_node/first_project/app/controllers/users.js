@@ -4,6 +4,8 @@ const User = require('../models/').user,
   errors = require('../errors'),
   sessionManager = require('./../services/sessionManager'),
   album = require('../models').album,
+  albumService = require('../services/album'),
+  config = require('../../config'),
   logger = require('../logger');
 
 const validateEmail = email => {
@@ -176,5 +178,42 @@ exports.getAllAlbums = (req, res, next) => {
       .catch(err => {
         next(err);
       });
+  }
+};
+
+const requestForPhotos = (exist, url, msg, res, next) => {
+  if (exist) {
+    return albumService.executeRequest(url).then(result => {
+      res.status(200);
+      res.send({ photos: result });
+      res.end();
+    });
+  } else {
+    next(errors.defaultError(msg));
+  }
+};
+exports.getPhotos = (req, res, next) => {
+  const idAlbum = parseInt(req.url.split('/')[3]);
+  const url = `${config.common.urlRequests.base}${config.common.urlRequests.photos}${idAlbum}`;
+  if (req.user.admin) {
+    return album
+      .getByAlbum(idAlbum)
+      .then(exist => {
+        return requestForPhotos(exist, url, 'The album requested does not exist', res, next);
+      })
+      .catch(err => next(err));
+  } else {
+    return album
+      .getOne(req.user.id, idAlbum)
+      .then(exist => {
+        return requestForPhotos(
+          exist,
+          url,
+          'This user doesnt have permit for this operation or the album does not exist',
+          res,
+          next
+        );
+      })
+      .catch(err => next(err));
   }
 };

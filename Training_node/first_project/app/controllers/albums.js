@@ -34,6 +34,7 @@ exports.getById = (req, res, next) => {
               res.end();
             });
           } else {
+            logger.info('ERRR');
             next(errors.defaultError('This album has already been purchased'));
           }
         });
