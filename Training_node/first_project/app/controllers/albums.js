@@ -25,34 +25,19 @@ exports.getById = (req, res, next) => {
   const email = sessionManager.decode(req.headers.authorization);
   return User.getByEmail(email)
     .then(u => {
-      return albumService
-        .executeRequest(urlId)
-        .then(oneAlbum => {
-          return album
-            .getOne(u.id, oneAlbum.id)
-            .then(exist => {
-              if (!exist) {
-                album
-                  .create({ idAlbum: oneAlbum.id, userId: u.id, title: oneAlbum.title })
-                  .then(a => {
-                    res.send();
-                    res.status(200);
-                    res.end();
-                  })
-                  .catch(err => {
-                    next(err);
-                  });
-              } else {
-                next(errors.defaultError('This album has already been purchased'));
-              }
-            })
-            .catch(err => {
-              next(err);
+      return albumService.executeRequest(urlId).then(oneAlbum => {
+        return album.getOne(u.id, oneAlbum.id).then(exist => {
+          if (!exist) {
+            album.create({ idAlbum: oneAlbum.id, userId: u.id, title: oneAlbum.title }).then(a => {
+              res.send();
+              res.status(200);
+              res.end();
             });
-        })
-        .catch(err => {
-          next(err);
+          } else {
+            next(errors.defaultError('This album has already been purchased'));
+          }
         });
+      });
     })
     .catch(err => {
       next(err);
