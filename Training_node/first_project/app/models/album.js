@@ -41,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   album.getByUser = userId => {
     return album.findAll({ where: userId }).catch(err => {
+      logger.info(err);
       throw errors.databaseError(err.detail);
     });
   };

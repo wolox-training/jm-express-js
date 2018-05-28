@@ -4,6 +4,7 @@ const chai = require('chai'),
   sessionManager = require('./../app/services/sessionManager'),
   logger = require('../app/logger'),
   nock = require('nock'),
+  sleep = require('sleep'),
   config = require('../config'),
   User = require('../app/models').user,
   should = chai.should(),
@@ -419,5 +420,38 @@ describe('/users/albums/:id/photos GET', () => {
         })
         .then(() => done());
     });
+  });
+});
+
+describe('test for login expiration', () => {
+  it('should be fail because the session expired', done => {
+    successfulLogin()
+      .then(loginRes => {
+        sleep.sleep(5);
+        return chai
+          .request(server)
+          .get('/users?limit=2&page=1')
+          .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+          .catch(err => {
+            err.should.have.status(401);
+          });
+      })
+      .then(() => done());
+  });
+  it('should be success because the session dont expire', done => {
+    successfulLogin()
+      .then(loginRes => {
+        return chai
+          .request(server)
+          .get('/users?limit=2&page=1')
+          .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.have.property('users');
+            res.body.users.length.should.eql(2);
+          });
+      })
+      .then(() => done());
   });
 });

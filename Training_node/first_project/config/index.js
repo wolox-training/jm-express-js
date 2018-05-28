@@ -43,6 +43,10 @@ const config = {
     },
     session: {
       header_name: 'authorization',
+      creation_name: 'creation',
+      expiration_name: 'expiration',
+      time: process.env.EXPIRATION_TIME,
+      unit: process.env.EXPIRATION_UNIT,
       secret: process.env.NODE_API_SESSION_SECRET
     },
     rollbar: {

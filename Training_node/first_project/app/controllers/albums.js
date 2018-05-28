@@ -22,8 +22,8 @@ exports.getAll = (req, res, next) => {
 
 exports.getById = (req, res, next) => {
   const urlId = `${config.common.urlRequests.base}${req.url}`;
-  const email = sessionManager.decode(req.headers.authorization);
-  return User.getByEmail(email)
+  const token = sessionManager.decode(req.headers.authorization);
+  return User.getByEmail(token.email)
     .then(u => {
       return albumService.executeRequest(urlId).then(oneAlbum => {
         return album.getOne(u.id, oneAlbum.id).then(exist => {

@@ -43,6 +43,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "jwt-simple": "^0.5.1",
+    "moment": "^2.22.1",
     "morgan": "^1.9.0",
     "nock": "^9.2.6",
     "pg": "^7.4.1",
@@ -50,6 +51,7 @@
     "request": "^2.86.0",
     "rollbar": "^2.3.9",
     "sequelize": "^4.34.0",
+    "sleep": "^5.1.1",
     "umzug": "^2.1.0",
     "winston": "^2.4.0",
     "winston-daily-rotate-file": "^1.7.2"
