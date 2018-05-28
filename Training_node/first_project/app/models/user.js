@@ -39,8 +39,8 @@ module.exports = (sequelize, DataTypes) => {
       throw errors.databaseError(err.message);
     });
   };
-  User.getOne = criterion => {
-    return User.findOne({ where: criterion }).catch(err => {
+  User.getOne = params => {
+    return User.findOne({ where: params }).catch(err => {
       throw errors.databaseError(err.detail);
     });
   };
