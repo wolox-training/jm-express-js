@@ -4,28 +4,41 @@ const sessionManager = require('./../services/sessionManager'),
   moment = require('moment'),
   logger = require('../logger');
 
-const isValid = (creation, expiration) => {
+const isValid = expiration => {
   return !(moment().diff(expiration, config.common.session.unit) > 0);
+};
+const verifyLastInvalidate = (userInvalidate, creationDate) => {
+  const creation = moment(creationDate),
+    invalidation = moment(userInvalidate, config.common.session.unit),
+    diff = creation.diff(userInvalidate);
+  logger.info(creation, invalidation, diff);
+  return !(diff > 0);
 };
 const auth = (req, res, next, isAdmin = false) => {
   const authHeader = req.headers[sessionManager.HEADER_NAME];
   if (authHeader) {
     const token = sessionManager.decode(authHeader);
-    if (isValid(token.creation, token.expiration)) {
+    if (isValid(token.expiration)) {
       return User.getByEmail(token.email)
         .then(u => {
           if (u) {
-            if (isAdmin) {
-              if (u.admin) {
+            if (verifyLastInvalidate(u.lastInvalidate, token.creation)) {
+              if (isAdmin) {
+                if (u.admin) {
+                  req.user = u;
+                  next();
+                } else {
+                  res.status(401);
+                  res.end();
+                }
+              } else {
                 req.user = u;
                 next();
-              } else {
-                res.status(401);
-                res.end();
               }
             } else {
-              req.user = u;
-              next();
+              res.status(401);
+              res.send('Your session was inhabilited');
+              res.end();
             }
           } else {
             res.status(401);

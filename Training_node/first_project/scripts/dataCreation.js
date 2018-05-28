@@ -1,5 +1,6 @@
 const Hash = require('../app/services/bcrypt'),
   album = require('../app/models').album,
+  moment = require('moment'),
   User = require('../app/models').user;
 
 exports.execute = () => {
@@ -11,6 +12,7 @@ exports.execute = () => {
           firstName: 'julian',
           lastName: 'sevilla',
           email: 'julian.sevilla@wolox.com.ar',
+          lastInvalidate: moment().format(),
           password: hash
         })
       );
@@ -19,6 +21,7 @@ exports.execute = () => {
           firstName: 'pablo',
           lastName: 'cid',
           email: 'pablo.cid@wolox.com.ar',
+          lastInvalidate: moment().format(),
           password: hash
         })
       );
@@ -28,6 +31,7 @@ exports.execute = () => {
           lastName: 'molina',
           email: 'julian.molina@wolox.com.ar',
           admin: true,
+          lastInvalidate: moment().format(),
           password: hash
         })
       );
