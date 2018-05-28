@@ -1,9 +1,12 @@
 const errors = require('../errors'),
   logger = require('../logger'),
   config = require('../../config'),
+<<<<<<< HEAD
   album = require('../models').album,
   User = require('../models').user,
   sessionManager = require('./../services/sessionManager'),
+=======
+>>>>>>> master
   albumService = require('../services/album');
 
 exports.getAll = (req, res, next) => {
