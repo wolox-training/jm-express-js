@@ -455,3 +455,61 @@ describe('test for login expiration', () => {
       .then(() => done());
   });
 });
+
+describe('/users/sessions/invalidate_all POST', () => {
+  it('should be fail because the session went invalidate', done => {
+    successfulLogin()
+      .then(loginRes => {
+        return chai
+          .request(server)
+          .get('/users?limit=2&page=1')
+          .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+          .then(res => {
+            return chai
+              .request(server)
+              .post('/users/sessions/invalidate_all')
+              .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+              .then(resInvalidate => {
+                return chai
+                  .request(server)
+                  .get('/users?limit=2&page=1')
+                  .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+                  .catch(err => {
+                    err.status(401);
+                  });
+              });
+          });
+      })
+      .then(() => done());
+  });
+
+  it('should be sucessful because the sessions went invalidate but the user who disabled the sessions can continue to operate ', done => {
+    successfulLogin()
+      .then(loginRes => {
+        return chai
+          .request(server)
+          .get('/users?limit=2&page=1')
+          .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+          .then(res => {
+            return chai
+              .request(server)
+              .post('/users/sessions/invalidate_all')
+              .set(sessionManager.HEADER_NAME, loginRes.headers[sessionManager.HEADER_NAME])
+              .then(resInvalidate => {
+                return chai
+                  .request(server)
+                  .get('/users?limit=2&page=1')
+                  .set(sessionManager.HEADER_NAME, resInvalidate.headers[sessionManager.HEADER_NAME])
+                  .then(resInvalidateOk => {
+                    resInvalidateOk.should.have.status(200);
+                    resInvalidateOk.should.be.json;
+                    resInvalidateOk.body.should.have.property('users');
+                    resInvalidateOk.body.users.length.should.eql(2);
+                    dictum.chai(resInvalidateOk);
+                  });
+              });
+          });
+      })
+      .then(() => done());
+  });
+});

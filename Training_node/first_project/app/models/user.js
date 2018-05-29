@@ -76,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
   User.changeInvalidate = (time, idUser) => {
-    return User.update({ last_invalidate: time }, { where: { id: idUser } }).catch(err => {
+    return User.update({ lastInvalidate: time }, { where: { id: idUser } }).catch(err => {
       throw errors.databaseError(err.detail);
     });
   };

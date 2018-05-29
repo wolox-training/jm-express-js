@@ -123,7 +123,7 @@ exports.login = (req, res, next) => {
               expiration: moment()
                 .add(config.common.session.time, config.common.session.unit)
                 .format(),
-              creation: moment()
+              creation: moment().format()
             });
             res.status(200);
             res.set(sessionManager.HEADER_NAME, auth);
@@ -229,6 +229,14 @@ exports.getPhotos = (req, res, next) => {
 exports.invalidateAll = (req, res, next) => {
   return User.changeInvalidate(moment().format(), req.user.id)
     .then(r => {
+      const auth = sessionManager.encode({
+        email: req.user.email,
+        expiration: moment()
+          .add(config.common.session.time, config.common.session.unit)
+          .format(),
+        creation: moment().format()
+      });
+      res.set(sessionManager.HEADER_NAME, auth);
       res.status(200);
       res.send('Invalidated sessions');
       res.end();

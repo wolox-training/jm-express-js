@@ -9,10 +9,9 @@ const isValid = expiration => {
 };
 const verifyLastInvalidate = (userInvalidate, creationDate) => {
   const creation = moment(creationDate),
-    invalidation = moment(userInvalidate, config.common.session.unit),
+    invalidation = moment(userInvalidate),
     diff = creation.diff(userInvalidate);
-  logger.info(creation, invalidation, diff);
-  return !(diff > 0);
+  return diff >= 0;
 };
 const auth = (req, res, next, isAdmin = false) => {
   const authHeader = req.headers[sessionManager.HEADER_NAME];
