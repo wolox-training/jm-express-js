@@ -74,18 +74,20 @@ describe('/albums/id POST', () => {
         .post('/albums/2')
         .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
         .then(json => {
-          return chai
-            .request(server)
-            .post('/albums/2')
-            .set(sessionManager.HEADER_NAME, res.headers[sessionManager.HEADER_NAME])
-            .catch(err => {
-              err.should.have.status(400);
-              err.response.should.be.json;
-              err.response.body.should.have.property('message');
-              err.response.body.should.have.property('internal_code');
-            });
-        })
-        .then(() => done());
+          testUser.successfulLogin.then(res2 => {
+            return chai
+              .request(server)
+              .post('/albums/2')
+              .set(sessionManager.HEADER_NAME, res2.headers[sessionManager.HEADER_NAME])
+              .catch(err => {
+                err.should.have.status(400);
+                err.response.should.be.json;
+                err.response.body.should.have.property('message');
+                err.response.body.should.have.property('internal_code');
+              })
+              .then(() => done());
+          });
+        });
     });
   });
 });

@@ -4,6 +4,9 @@ const User = require('../models/').user,
   errors = require('../errors'),
   sessionManager = require('./../services/sessionManager'),
   album = require('../models').album,
+  albumService = require('../services/album'),
+  config = require('../../config'),
+  moment = require('moment'),
   logger = require('../logger');
 
 const validateEmail = email => {
@@ -114,7 +117,12 @@ exports.login = (req, res, next) => {
       if (u) {
         return Hash.passwordsEquals(user.password, u.password).then(isValid => {
           if (isValid) {
-            const auth = sessionManager.encode(u.email);
+            const auth = sessionManager.encode({
+              email: u.email,
+              expiration: moment()
+                .add(config.common.session.time, config.common.session.unit)
+                .format()
+            });
             res.status(200);
             res.set(sessionManager.HEADER_NAME, auth);
             res.send(u);
@@ -157,7 +165,6 @@ exports.getAll = (req, res, next) => {
 };
 
 exports.getAllAlbums = (req, res, next) => {
-  logger.info(req.params.user_id);
   const idUrl = parseInt(req.params.user_id);
   if (!req.user.admin && req.user.id !== idUrl) {
     next(errors.defaultError('This user doesnt have permit for this operation'));
@@ -177,5 +184,42 @@ exports.getAllAlbums = (req, res, next) => {
       .catch(err => {
         next(err);
       });
+  }
+};
+
+const requestForPhotos = (exist, url, msg, res, next) => {
+  if (exist) {
+    return albumService.executeRequest(url).then(result => {
+      res.status(200);
+      res.send({ photos: result });
+      res.end();
+    });
+  } else {
+    next(errors.defaultError(msg));
+  }
+};
+exports.getPhotos = (req, res, next) => {
+  const idAlbum = parseInt(req.params.id);
+  const url = `${config.common.urlRequests.base}${config.common.urlRequests.photos}${idAlbum}`;
+  if (req.user.admin) {
+    return album
+      .getByAlbum(idAlbum)
+      .then(exist => {
+        return requestForPhotos(exist, url, 'The album requested does not exist', res, next);
+      })
+      .catch(err => next(err));
+  } else {
+    return album
+      .getOne(req.user.id, idAlbum)
+      .then(exist => {
+        return requestForPhotos(
+          exist,
+          url,
+          'This user doesnt have permit for this operation or the album does not exist',
+          res,
+          next
+        );
+      })
+      .catch(err => next(err));
   }
 };
