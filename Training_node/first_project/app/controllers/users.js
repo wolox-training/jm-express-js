@@ -80,6 +80,7 @@ const create = (req, res, next, admin = false) => {
       return Hash.getHash(user.password, saltRounds)
         .then(newPassword => {
           user.password = newPassword;
+          user.lastInvalidate = moment().format();
           return User.getByEmail(user.email).then(exist => {
             if (admin) {
               user.admin = true;
@@ -121,7 +122,8 @@ exports.login = (req, res, next) => {
               email: u.email,
               expiration: moment()
                 .add(config.common.session.time, config.common.session.unit)
-                .format()
+                .format(),
+              creation: moment().format()
             });
             res.status(200);
             res.set(sessionManager.HEADER_NAME, auth);
@@ -222,4 +224,22 @@ exports.getPhotos = (req, res, next) => {
       })
       .catch(err => next(err));
   }
+};
+
+exports.invalidateAll = (req, res, next) => {
+  return User.changeInvalidate(moment().format(), req.user.id)
+    .then(r => {
+      const auth = sessionManager.encode({
+        email: req.user.email,
+        expiration: moment()
+          .add(config.common.session.time, config.common.session.unit)
+          .format(),
+        creation: moment().format()
+      });
+      res.set(sessionManager.HEADER_NAME, auth);
+      res.status(200);
+      res.send('Invalidated sessions');
+      res.end();
+    })
+    .catch(err => next(err));
 };

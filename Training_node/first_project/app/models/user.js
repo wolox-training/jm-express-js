@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
+      lastInvalidate: {
+        type: DataTypes.STRING,
+        field: 'last_invalidate'
+      },
       admin: {
         type: DataTypes.BOOLEAN
       }
@@ -68,6 +72,11 @@ module.exports = (sequelize, DataTypes) => {
   };
   User.setAdmin = idUser => {
     return User.update({ admin: true }, { where: { id: idUser } }).catch(err => {
+      throw errors.databaseError(err.detail);
+    });
+  };
+  User.changeInvalidate = (time, idUser) => {
+    return User.update({ lastInvalidate: time }, { where: { id: idUser } }).catch(err => {
       throw errors.databaseError(err.detail);
     });
   };
