@@ -1,4 +1,5 @@
 const Hash = require('../app/services/bcrypt'),
+  album = require('../app/models').album,
   User = require('../app/models').user;
 
 exports.execute = () => {

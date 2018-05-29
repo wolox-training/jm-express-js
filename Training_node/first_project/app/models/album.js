@@ -39,6 +39,11 @@ module.exports = (sequelize, DataTypes) => {
       throw errors.databaseError(err.detail);
     });
   };
+  album.getByUser = userId => {
+    return album.findAll({ where: userId }).catch(err => {
+      throw errors.databaseError(err.detail);
+    });
+  };
   album.associate = function(models) {};
   return album;
 };

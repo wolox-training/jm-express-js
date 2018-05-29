@@ -3,6 +3,7 @@ const User = require('../models/').user,
   Hash = require('../services/bcrypt'),
   errors = require('../errors'),
   sessionManager = require('./../services/sessionManager'),
+  album = require('../models').album,
   logger = require('../logger');
 
 const validateEmail = email => {
@@ -152,5 +153,29 @@ exports.getAll = (req, res, next) => {
       });
   } else {
     next(errors.defaultError('The fields page and limit are required'));
+  }
+};
+
+exports.getAllAlbums = (req, res, next) => {
+  logger.info(req.params.user_id);
+  const idUrl = parseInt(req.params.user_id);
+  if (!req.user.admin && req.user.id !== idUrl) {
+    next(errors.defaultError('This user doesnt have permit for this operation'));
+  } else {
+    return User.getById(idUrl)
+      .then(exist => {
+        if (!exist) {
+          next(errors.defaultError('The user requested does not exist'));
+        } else {
+          return album.getByUser(idUrl).then(result => {
+            res.status(200);
+            res.send({ albums: result });
+            res.end();
+          });
+        }
+      })
+      .catch(err => {
+        next(err);
+      });
   }
 };

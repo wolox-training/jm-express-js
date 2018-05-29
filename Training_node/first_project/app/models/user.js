@@ -1,6 +1,7 @@
 'use strict';
 
-const errors = require('../errors');
+const errors = require('../errors'),
+  logger = require('../logger');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
@@ -38,13 +39,18 @@ module.exports = (sequelize, DataTypes) => {
       throw errors.databaseError(err.message);
     });
   };
-  User.getOne = email => {
-    return User.findOne({ where: email }).catch(err => {
+  User.getOne = params => {
+    return User.findOne({ where: params }).catch(err => {
       throw errors.databaseError(err.detail);
     });
   };
   User.getByEmail = email => {
     return User.getOne({ email }).catch(err => {
+      throw errors.databaseError(err.detail);
+    });
+  };
+  User.getById = id => {
+    return User.getOne({ id }).catch(err => {
       throw errors.databaseError(err.detail);
     });
   };
