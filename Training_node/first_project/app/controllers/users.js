@@ -165,10 +165,6 @@ exports.getAll = (req, res, next) => {
 };
 
 exports.getAllAlbums = (req, res, next) => {
-<<<<<<< HEAD
-=======
-  logger.info(req.params.user_id);
->>>>>>> master
   const idUrl = parseInt(req.params.user_id);
   if (!req.user.admin && req.user.id !== idUrl) {
     next(errors.defaultError('This user doesnt have permit for this operation'));
