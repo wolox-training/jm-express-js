@@ -6,7 +6,9 @@ const User = require('../models/').user,
   album = require('../models').album,
   albumService = require('../services/album'),
   config = require('../../config'),
+  mailer = require('nodemailer'),
   moment = require('moment'),
+  // smtpTransport = require('nodemailer-smtp-transport'),
   logger = require('../logger');
 
 const validateEmail = email => {
@@ -41,12 +43,73 @@ const validate = (firstName, lastName, password, email) => {
     : { success: true };
 };
 
+const send = email => {
+  logger.info(config.common.email.user, config.common.email.password);
+  const transporter = mailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: config.common.email.user,
+      pass: config.common.email.password
+    }
+  });
+
+  const mailOptions = {
+    from: config.common.email.user,
+    to: email,
+    subject: 'text',
+    text: 'this is a test'
+  };
+
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, function(err, info) {
+      if (err) {
+        logger.info(err);
+        reject(err);
+      } else {
+        logger.info(info);
+        resolve();
+      }
+    });
+  });
+
+  // const transporter = nodemailer.createTransport(
+  //   smtpTransport({
+  //     service: 'gmail',
+  //     port: 587,
+  //     auth: {
+  //       user: config.common.email.user,
+  //       pass: config.common.email.password
+  //     }
+  //   })
+  // );
+  // const mailOptions = {
+  //   from: config.common.email.user, // sender address
+  //   to: email, // list of receivers
+  //   subject: 'Welcome', // Subject line
+  //   html: '<h1>Welcome to wolox</h1>' // plain text body
+  // };
+  // return new Promise((resolve, reject) => {
+  //   transporter.sendMail(mailOptions, function(err, info) {
+  //     if (err) {
+  //       logger.info(err);
+  //       reject(err);
+  //     } else {
+  //       logger.info(info);
+  //       resolve();
+  //     }
+  //   });
+  // });
+};
 const createModel = (user, res, next) => {
-  return User.createModel(user)
+  return send(user.email)
     .then(u => {
-      res.send(user.email);
-      res.status(200);
-      res.end();
+      return User.createModel(user).then(r => {
+        res.send(user.email);
+        res.status(200);
+        res.end();
+      });
     })
     .catch(err => {
       next(err);

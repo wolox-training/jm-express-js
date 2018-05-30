@@ -57,6 +57,10 @@ const config = {
       base: process.env.REQUEST_BASE,
       albumList: process.env.REQUEST_ALBUMLIST,
       photos: process.env.REQUEST_PHOTOS
+    },
+    email: {
+      user: process.env.EMAIL_USER,
+      password: process.env.EMAIL_PASSWORD
     }
   }
 };
